@@ -7,7 +7,6 @@ const knexConfig = knexConfigs[process.env.NODE_ENV];
 
 const knex = Knex(knexConfig);
 
-
 let rootNodeForUser = null;
 let runQueryAsUser = null;
 
@@ -19,7 +18,10 @@ describe('User Access Control', () => {
   beforeEach(async () => {
     await knex.seed.run();
     rootNodeForUser = async (username) => {
-      const user = await knex('User').select('id').where({ username }).first();
+      const user = await knex('User')
+        .select('id')
+        .where({ username })
+        .first();
       const context = { userId: user.id, isApiQuery: true };
       return {
         async onQuery(qb) {
@@ -40,31 +42,43 @@ describe('User Access Control', () => {
 
   describe('Alice', () => {
     it('should be able to fetch users from api', async () => {
-      const { data: { users } } = await runQueryAsUser('Alice', '{users { id, username }}');
+      const {
+        data: { users },
+      } = await runQueryAsUser('Alice', '{users { id, username }}');
       expect(users).toMatchSnapshot();
     });
 
     it('should be not be able to see the passwords of others', async () => {
-      const { data: { users } } = await runQueryAsUser('Alice', '{users { id, username, password }}');
+      const {
+        data: { users },
+      } = await runQueryAsUser('Alice', '{users { id, username, password }}');
       expect(users).toMatchSnapshot();
     });
 
     it('should be not be able to see the passwords of others', async () => {
-      const { data: { users } } = await runQueryAsUser('Alice', '{users { id, username, password }}');
+      const {
+        data: { users },
+      } = await runQueryAsUser('Alice', '{users { id, username, password }}');
       expect(users).toMatchSnapshot();
     });
 
     it('should only be able to see their project', async () => {
-      const { data: { projects } } = await runQueryAsUser('Alice', '{projects { id, title }}');
+      const {
+        data: { projects },
+      } = await runQueryAsUser('Alice', '{projects { id, title }}');
       expect(projects).toMatchSnapshot();
     });
 
     it('should not be able to tunnel through project to see password', async () => {
-      const { data: { projects } } = await runQueryAsUser('Alice', '{projects { id, owner { id, username, password }}}');
+      const {
+        data: { projects },
+      } = await runQueryAsUser('Alice', '{projects { id, users { id, username, password }}}');
       expect(projects).toMatchSnapshot();
     });
     it('should not be able to tunnel through user to see project', async () => {
-      const { data: { users } } = await runQueryAsUser('Alice', '{users { id, projects { id, title }}}');
+      const {
+        data: { users },
+      } = await runQueryAsUser('Alice', '{users { id, projects { id, title }}}');
       expect(users).toMatchSnapshot();
     });
   });

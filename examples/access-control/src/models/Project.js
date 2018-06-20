@@ -12,9 +12,19 @@ module.exports = class Project extends BaseModel {
     };
   }
 
+  static async modifyApiQuery(qb, { userId }) {
+    const knex = Project.knex();
+    qb.whereIn(
+      'id',
+      knex('User_Project')
+        .select('project_id')
+        .where({ user_id: userId }),
+    );
+  }
+
   static get relationMappings() {
     return {
-      projects: {
+      users: {
         relation: this.ManyToManyRelation,
         modelClass: 'User',
         join: {
@@ -29,4 +39,3 @@ module.exports = class Project extends BaseModel {
     };
   }
 };
-

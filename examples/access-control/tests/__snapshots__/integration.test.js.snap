@@ -12,7 +12,7 @@ Array [
   },
   Object {
     "id": 3,
-    "username": "Eve",
+    "username": "John",
   },
 ]
 `;
@@ -32,7 +32,7 @@ Array [
   Object {
     "id": 3,
     "password": null,
-    "username": "Eve",
+    "username": "John",
   },
 ]
 `;
@@ -52,7 +52,7 @@ Array [
   Object {
     "id": 3,
     "password": null,
-    "username": "Eve",
+    "username": "John",
   },
 ]
 `;
@@ -61,11 +61,28 @@ exports[`User Access Control Alice should not be able to tunnel through project 
 Array [
   Object {
     "id": 1,
-    "owner": Object {
-      "id": 1,
-      "password": "alice",
-      "username": "Alice",
-    },
+    "users": Array [
+      Object {
+        "id": 1,
+        "password": "alice",
+        "username": "Alice",
+      },
+    ],
+  },
+  Object {
+    "id": 2,
+    "users": Array [
+      Object {
+        "id": 2,
+        "password": null,
+        "username": "Bob",
+      },
+      Object {
+        "id": 1,
+        "password": "alice",
+        "username": "Alice",
+      },
+    ],
   },
 ]
 `;
@@ -77,13 +94,22 @@ Array [
     "projects": Array [
       Object {
         "id": 1,
-        "title": "Project by Alice",
+        "title": "Project 1",
+      },
+      Object {
+        "id": 2,
+        "title": "Project 2",
       },
     ],
   },
   Object {
     "id": 2,
-    "projects": Array [],
+    "projects": Array [
+      Object {
+        "id": 2,
+        "title": "Project 2",
+      },
+    ],
   },
   Object {
     "id": 3,
@@ -96,7 +122,11 @@ exports[`User Access Control Alice should only be able to see their project 1`] 
 Array [
   Object {
     "id": 1,
-    "title": "Project by Alice",
+    "title": "Project 1",
+  },
+  Object {
+    "id": 2,
+    "title": "Project 2",
   },
 ]
 `;
@@ -112,8 +142,8 @@ Array [
     "username": "Bob",
   },
   Object {
-    "password": "eve",
-    "username": "Eve",
+    "password": "john",
+    "username": "John",
   },
 ]
 `;
